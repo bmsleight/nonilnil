@@ -1,0 +1,19 @@
+from django.contrib import admin
+
+# Register your models here.
+
+from .models import Fgroups
+from .models import Teams
+from .models import Series
+from .models import Rounds
+from .models import Emailrounds
+from .models import Payments
+
+admin.site.register(Fgroups)
+admin.site.register(Teams)
+admin.site.register(Series)
+admin.site.register(Rounds)
+admin.site.register(Emailrounds)
+admin.site.register(Payments)
+
+

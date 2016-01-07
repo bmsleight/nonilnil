@@ -55,3 +55,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+
+#Django
+myvenv
+db.sqlite3
+*~
