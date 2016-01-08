@@ -27,6 +27,7 @@ class Series(models.Model):
     series_name = models.CharField(max_length=200, help_text='Name of series of games')
     series_open = models.BooleanField(default=True)
     entry_cost = models.DecimalField(max_digits=5, decimal_places=2)
+    rollover = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     end_message = models.TextField(null=True, blank=True, help_text="A Message to include at end of series (e.g. Winner: HHH, after 8 rounds")
 
     def __str__(self):              # __unicode__ on Python 2
@@ -36,6 +37,7 @@ class Round(models.Model):
     # Include in Admin
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     round_date = models.DateTimeField('Date games will be played on')
+    round_open = models.BooleanField(default=True)
     email_message = models.TextField(null=True, blank=True, help_text="A Message to include in the email")
 
     def __str__(self):              # __unicode__ on Python 2

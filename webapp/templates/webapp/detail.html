@@ -1,0 +1,14 @@
+<h1>{{ series.series_name }}</h1>
+    {% if not series.series_open %}
+        <h2>This is now closed</h2>
+        <p>{{ serie.end_message }}</p>
+    {% endif %}
+
+    {% if series.series_open %}
+        <h2>This is still open - what fun</h2>
+        <p>Cost of entry {{ serie.entry_cost }} <p>
+        <p>Roll-over {{ serie.rollover }} <p>
+
+    {% endif %}
+
+

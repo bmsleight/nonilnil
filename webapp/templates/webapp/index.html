@@ -1,0 +1,13 @@
+{% if series %}
+    <ul>
+    {% for serie in series %}
+        <li><a href="{% url 'series_detail' serie.id %}">{{ serie.series_name }}</a>
+            {% if not serie.series_open %}(Closed).
+                <ul><li>{{ serie.end_message }}</li></ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No series are available.</p>
+{% endif %}
