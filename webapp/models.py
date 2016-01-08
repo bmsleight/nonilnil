@@ -41,7 +41,7 @@ class Round(models.Model):
     email_message = models.TextField(null=True, blank=True, help_text="A Message to include in the email")
 
     def __str__(self):              # __unicode__ on Python 2
-        return series + " " + str(round_date)
+        return self.series.series_name + " " + str(self.round_date)
 
 class Emailround(models.Model):
     # Include in Admin in case of error.

@@ -6,9 +6,25 @@
 
     {% if series.series_open %}
         <h2>This is still open - what fun</h2>
-        <p>Cost of entry {{ serie.entry_cost }} <p>
-        <p>Roll-over {{ serie.rollover }} <p>
-
+        <p>Cost of entry £{{ series.entry_cost }} <p>
+        <p>Roll-over £{{ series.rollover }} <p>
     {% endif %}
+
+        {% if round_f %}
+            <p>Rounds</p>
+            {% for round in round_f %}
+                {% if not round.round_open %}
+                    <ul>
+                    <li>{{ round.round_date }} - Round Closed</li>
+                    {% for prediction in round.prediction_set.all %}
+                        <ul><li>{{ prediction.user }}, {{ prediction.team }}</li></ul>
+                    {% endfor %}
+                   </ul>
+                {% endif %}
+                {% if round.round_open %}
+                <p><a href="{% url 'series_detail' series.id %}">Round still open until {{ round.round_date }} - enter your selection</a></p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
 
