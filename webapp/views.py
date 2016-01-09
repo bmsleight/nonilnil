@@ -17,6 +17,5 @@ def series_list(request):
 def series_detail(request, pk):
     series = get_object_or_404(Series, id=pk)
     round_f = Round.objects.filter(series=series).order_by('-id')
-    prediction = Prediction.objects.filter(round_f=round_f).order_by('-id')
-    nilnils = Nilnils.objects.filter(round_f=round_f).order_by('-id')
-    return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f, 'prediction': prediction, 'nilnils': nilnils,})
+    return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f})
+
