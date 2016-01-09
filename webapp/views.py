@@ -8,6 +8,8 @@ from .models import Round
 from .models import Prediction
 from .models import Nilnils
 
+from django.contrib.auth.decorators import login_required
+
 from .forms import PredictionForm
 
 # Create your views here.
@@ -27,22 +29,7 @@ def loser_detail(request, pk):
     round_f = Round.objects.filter(series=series).order_by('-id')
     return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f, 'loser': True})
 
-
-def prediction_new(request, s_pk, r_pk):
-    round_f = get_object_or_404(Round, id=r_pk)
-
-    if request.method == "POST":
-        form = PredictionForm(request.POST)
-        if form.is_valid():
-            prediction = form.save(commit=False)
-            prediction.user = request.user
-            prediction.round_f = round_f
-            prediction.save()
-            return redirect('series_detail', pk=s_pk)
-    else:
-        form = PredictionForm()
-    return render(request, 'webapp/prediction_edit.html', {'form': form})
-
+@login_required
 def manage_nilnils(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
     predictions_all_users = Prediction.objects.filter(round_f=round_f)
@@ -57,7 +44,7 @@ def manage_nilnils(request, s_pk, r_pk):
         formset = NilnilsFormSet(queryset=Nilnils.objects.filter(round_f=r_pk))
     return render(request, 'webapp/nilnil_edit.html', {'formset': formset, 'all_predictions': predictions_all_users, 'round_f': round_f})
 
-
+@login_required
 def manage_prediction(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
     PredictionFormSet = modelformset_factory(Prediction, fields=('team', ), max_num=1)
