@@ -1,7 +1,7 @@
 <h1>{{ series.series_name }}</h1>
     {% if not series.series_open %}
         <h2>This is now closed</h2>
-        <p>{{ serie.end_message }}</p>
+        <p>{{ series.end_message }}</p>
     {% endif %}
 
     {% if series.series_open %}
@@ -15,15 +15,15 @@
         {% for round in round_f %}
 
             {% if round.round_open %}
-            <p><a href="{% url 'series_detail' series.id %}">Round still open until {{ round.round_date }} - enter your selection</a></p>
+            <p><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></p>
             {% endif %}
 
             {% if not round.round_open %}
                 <ul>
-                <li><a href="{% url 'round_detail' series.id round.id %}">{{ round.round_date }} - Round Closed </a></li>
+                <li>{{ round.round_date }} - Round Closed </li>
 
                 {% for prediction in round.prediction_set.all %}
-                    <ul><li>{{ prediction.user }}, {{ prediction.round_f }} {{ prediction.team }}, {{ prediction.correct }}</li></ul>
+                    <ul><li>{{ prediction.user }}, picked {{ prediction.team }}, which was {{ prediction.correct|yesno:"had a goal,Nil Nil!,maybe - just maybe" }}</li></ul>
                 {% endfor %}
                </ul>
             {% endif %}

@@ -10,5 +10,6 @@ from . import views
 urlpatterns = [
     url(r'^$', views.series_list, name='series_list'),
     url(r'^(?P<pk>[0-9]+)/$', views.series_detail, name='series_detail'),
-    url(r'^(?P<s_pk>[0-9]+)/(?P<r_pk>[0-9]+)/$', views.round_detail, name='round_detail'),
+    url(r'^(?P<s_pk>[0-9]+)/(?P<r_pk>[0-9]+)/prediction/$', views.manage_prediction, name='manage_prediction'),
+
 ]
