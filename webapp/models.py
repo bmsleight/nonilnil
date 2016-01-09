@@ -57,11 +57,31 @@ class Payment(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
 
+class PredictionManager(models.Manager):
+    def with_nonilnil(self):
+        print ("ping ")
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT p.id, p.user_id, p.round_f_id, n.ohno
+            FROM webapp_prediction p, webapp_nilnils n
+            WHERE p.round_f_id = n.round_f_id
+            GROUP BY p.id, p.user_id, p.round_f_id
+            ORDER BY p.id DESC""")
+        result_list = []
+        print ("RL ", result_list)
+        for row in cursor.fetchall():
+            p = self.model(id=row[0], user_id=row[1], round_f_id=row[2])
+            p.ohno = row[3]
+            result_list.append(p)
+        return result_list
+
 class Prediction(models.Model):
     # User form - the only one ?
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     round_f = models.ForeignKey(Round, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    objects = PredictionManager()
 
 class Nilnils(models.Model):
     # Superuser form, list teams select from that round and edit the ohno by exception
@@ -69,3 +89,5 @@ class Nilnils(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     ohno = models.BooleanField(default=True)
 
+    def __str__(self):              # __unicode__ on Python 2
+        return str(self.round_f) + " " + str(self.team) + " " + str(self.ohno)
