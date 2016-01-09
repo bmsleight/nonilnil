@@ -22,6 +22,12 @@ def series_detail(request, pk):
     round_f = Round.objects.filter(series=series).order_by('-id')
     return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f})
 
+def loser_detail(request, pk):
+    series = get_object_or_404(Series, id=pk)
+    round_f = Round.objects.filter(series=series).order_by('-id')
+    return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f, 'loser': True})
+
+
 def prediction_new(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
 
@@ -37,6 +43,20 @@ def prediction_new(request, s_pk, r_pk):
         form = PredictionForm()
     return render(request, 'webapp/prediction_edit.html', {'form': form})
 
+def manage_nilnils(request, s_pk, r_pk):
+    round_f = get_object_or_404(Round, id=r_pk)
+    predictions_all_users = Prediction.objects.filter(round_f=round_f)
+    total_team = len( Prediction.objects.filter(round_f=round_f).values('team'))
+    print(predictions_all_users, Prediction.objects.filter(round_f=round_f).values('team') )
+    NilnilsFormSet = modelformset_factory(Nilnils, fields=('team', 'ohno'), max_num=total_team)
+    if request.method == 'POST':
+        formset = NilnilsFormSet(request.POST, request.FILES, queryset=Nilnils.objects.filter(round_f=r_pk))
+        if formset.is_valid():
+            formset.save()
+    else:
+        formset = NilnilsFormSet(queryset=Nilnils.objects.filter(round_f=r_pk))
+    return render(request, 'webapp/nilnil_edit.html', {'formset': formset, 'all_predictions': predictions_all_users, 'round_f': round_f})
+
 
 def manage_prediction(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
@@ -44,6 +64,10 @@ def manage_prediction(request, s_pk, r_pk):
     message = ""
     all_rounds = Round.objects.filter(series=round_f.series.id)
     all_predictions = Prediction.objects.filter(round_f=all_rounds, user=request.user)
+    for prediction in all_predictions:
+       if prediction.failed():
+           return redirect('loser_detail', pk=s_pk)
+
     if request.method == "POST":
         formset = PredictionFormSet(request.POST, request.FILES,
                                 queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))

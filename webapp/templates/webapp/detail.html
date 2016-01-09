@@ -1,3 +1,8 @@
+{% if loser %}
+<h1>Losers can not enter any more teams until the next series starts</h1>
+
+{% endif %}
+
 <h1>{{ series.series_name }}</h1>
     {% if not series.series_open %}
         <h2>This is now closed</h2>
@@ -23,7 +28,7 @@
                 <li>{{ round.round_date }} - Round Closed </li>
 
                 {% for prediction in round.prediction_set.all %}
-                    <ul><li>{{ prediction.user }}, picked {{ prediction.team }}, which was {{ prediction.correct|yesno:"had a goal,Nil Nil!,maybe - just maybe" }}</li></ul>
+                    <ul><li>{{ prediction.user }}, picked {{ prediction.team }}, which {{ prediction.failed|yesno:"was Nil Nil!,had a goal,maybe - just maybe" }}</li></ul>
                 {% endfor %}
                </ul>
             {% endif %}

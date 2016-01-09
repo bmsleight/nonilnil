@@ -1,10 +1,9 @@
-<h2>Enter the prediction for games to be played on {{ round_f.round_date|date:"D d M Y" }} - {{ round_f.series.series_name }}</h2>
-<p>On the day of the matches - the selected team can not be changed</p>
+<h2>Nil Nils for {{ round_f.round_date|date:"D d M Y" }} - {{ round_f.series.series_name }}</h2>
 {% if all_predictions %}
     <h3>Saved predictions</h3>
     <ul>
     {% for prediction in all_predictions  %}
-        <li>{{ prediction.round_f.round_date|date:"D d M Y" }}, {{ prediction.team }}</li>
+        <li>{{ prediction.round_f.round_date|date:"D d M Y" }}, {{ prediction.team }} {{ prediction.user }}</li>
     {% endfor %}
     </ul> 
 {% endif %}

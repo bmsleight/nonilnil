@@ -65,7 +65,7 @@ class Prediction(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return str(self.user) + " " + str(self.round_f) + " " + str(self.team)
-    def correct(self):
+    def failed(self):
         possible_nilnils = Nilnils.objects.filter(round_f=self.round_f, team=self.team)[:1]
         if possible_nilnils:
             return(Nilnils.objects.get(round_f=self.round_f, team=self.team).ohno)
@@ -77,7 +77,7 @@ class Nilnils(models.Model):
     # Superuser form, list teams select from that round and edit the ohno by exception
     round_f = models.ForeignKey(Round, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=False)
-    ohno = models.BooleanField(default=True)
+    ohno = models.BooleanField(default=False)
 
     def __str__(self):              # __unicode__ on Python 2
         return str(self.round_f) + " " + str(self.team) + " " + str(self.ohno)
