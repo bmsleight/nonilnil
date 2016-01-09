@@ -38,13 +38,18 @@ def prediction_new(request, s_pk, r_pk):
 
 
 def manage_prediction(request, s_pk, r_pk):
-    PredictionFormSet = modelformset_factory(Prediction, fields=('team',))
+    round_f = get_object_or_404(Round, id=r_pk)
+    PredictionFormSet = modelformset_factory(Prediction, fields=('team', ), max_num=1)
     if request.method == "POST":
         formset = PredictionFormSet(request.POST, request.FILES,
                                 queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))
         if formset.is_valid():
-            formset.save()
-            # Do something.
+            for form in formset:
+                prediction = form.save(commit=False)
+                prediction.user = request.user
+                prediction.round_f = round_f
+                prediction.save()
+            return redirect('series_detail', pk=s_pk)
     else:
         formset = PredictionFormSet(queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))
     return render(request, 'webapp/prediction_edit.html', {'formset': formset})
