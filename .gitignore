@@ -61,3 +61,4 @@ target/
 myvenv
 db.sqlite3
 *~
+nonilnil/settings_secret.py
