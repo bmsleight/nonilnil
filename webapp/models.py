@@ -57,7 +57,6 @@ class Payment(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
 
-
 class Prediction(models.Model):
     # User form - the only one ?
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -74,12 +73,10 @@ class Prediction(models.Model):
             return(False)
 
 
-
-
 class Nilnils(models.Model):
     # Superuser form, list teams select from that round and edit the ohno by exception
     round_f = models.ForeignKey(Round, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=False)
     ohno = models.BooleanField(default=True)
 
     def __str__(self):              # __unicode__ on Python 2

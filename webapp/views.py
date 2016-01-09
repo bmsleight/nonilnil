@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
 from django.forms import modelformset_factory
+from django.utils import timezone
 
 from .models import Series
 from .models import Round
@@ -40,19 +41,39 @@ def prediction_new(request, s_pk, r_pk):
 def manage_prediction(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
     PredictionFormSet = modelformset_factory(Prediction, fields=('team', ), max_num=1)
+    message = ""
+    all_rounds = Round.objects.filter(series=round_f.series.id)
+    all_predictions = Prediction.objects.filter(round_f=all_rounds, user=request.user)
     if request.method == "POST":
         formset = PredictionFormSet(request.POST, request.FILES,
                                 queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))
+        if timezone.now() > round_f.round_date :
+             message = "Too late for to make or change your prediction. "
+#            return redirect('series_detail', pk=s_pk)
         if formset.is_valid():
             for form in formset:
                 prediction = form.save(commit=False)
-                prediction.user = request.user
-                prediction.round_f = round_f
-                prediction.save()
+                try:
+                    team_count = Prediction.objects.filter(round_f=all_rounds, team=prediction.team, user=request.user).count()
+                    if team_count >0:
+                        message += "You have already used " + str(prediction.team) + " in this series (or just re-saving your team)"
+                except:
+                    pass
+
+        if formset.is_valid() and message == "":
+            for form in formset:
+                if form.is_valid():
+                    prediction = form.save(commit=False)
+                    prediction.user = request.user
+                    prediction.round_f = round_f
+                    try:
+                        prediction.save()
+                    except:
+                        pass
             return redirect('series_detail', pk=s_pk)
     else:
         formset = PredictionFormSet(queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))
-    return render(request, 'webapp/prediction_edit.html', {'formset': formset})
+    return render(request, 'webapp/prediction_edit.html', {'formset': formset, 'round_f': round_f, 'message': message, 'all_predictions': all_predictions})
 
 
 
