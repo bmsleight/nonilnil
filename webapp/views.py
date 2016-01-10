@@ -11,6 +11,9 @@ from .models import Nilnils
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 from .forms import PredictionForm
 
 # Create your views here.
@@ -31,6 +34,37 @@ def loser_detail(request, pk):
     return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f, 'loser': True})
 
 @staff_member_required
+def missing_prediction(request, s_pk, r_pk):
+    round_f = get_object_or_404(Round, id=r_pk)
+    u_all = User.objects.all()
+    prediction_empty = []
+    for u in u_all:
+        not_empty = len(Prediction.objects.filter(round_f=round_f, user_id=u))
+        if not not_empty:
+            prediction_empty.append(u.username)
+
+    PredictionFormSet = modelformset_factory(Prediction, fields=('team', 'user'), extra=len(prediction_empty))
+    if request.method == 'POST':
+        formset = PredictionFormSet(request.POST, request.FILES, queryset=Prediction.objects.none())
+        if formset.is_valid():
+            for form in formset:
+                if form.is_valid():
+                    prediction = form.save(commit=False)
+                    prediction.round_f_id = round_f.id
+                    try:
+                        prediction.save()
+                    except:
+                        pass
+            return redirect('missing_prediction', s_pk=s_pk, r_pk=r_pk)
+
+    else:
+        formset = PredictionFormSet(queryset=Prediction.objects.none())
+
+    return render(request, 'webapp/missing_prediction.html', {'prediction_empty': prediction_empty, 'round_f': round_f, 'formset': formset, 's_pk': s_pk})
+
+
+
+@staff_member_required
 def manage_nilnils(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
     predictions_all_users = Prediction.objects.filter(round_f=round_f)
@@ -40,10 +74,13 @@ def manage_nilnils(request, s_pk, r_pk):
     if request.method == 'POST':
         formset = NilnilsFormSet(request.POST, request.FILES, queryset=Nilnils.objects.filter(round_f=r_pk))
         if formset.is_valid():
-            formset.save()
+            for form in formset:
+                    nilnil = form.save(commit=False)
+                    nilnil.round_f = round_f
+                    nilnil.save()
     else:
         formset = NilnilsFormSet(queryset=Nilnils.objects.filter(round_f=r_pk))
-    return render(request, 'webapp/nilnil_edit.html', {'formset': formset, 'all_predictions': predictions_all_users, 'round_f': round_f})
+    return render(request, 'webapp/nilnil_edit.html', {'formset': formset, 'all_predictions': predictions_all_users, 'round_f': round_f, 's_pk': s_pk})
 
 @login_required
 def manage_prediction(request, s_pk, r_pk):
@@ -85,7 +122,7 @@ def manage_prediction(request, s_pk, r_pk):
             return redirect('series_detail', pk=s_pk)
     else:
         formset = PredictionFormSet(queryset=Prediction.objects.filter(round_f=r_pk, user=request.user))
-    return render(request, 'webapp/prediction_edit.html', {'formset': formset, 'round_f': round_f, 'message': message, 'all_predictions': all_predictions})
+    return render(request, 'webapp/prediction_edit.html', {'formset': formset, 'round_f': round_f, 'message': message, 'all_predictions': all_predictions, 's_pk': s_pk})
 
 
 

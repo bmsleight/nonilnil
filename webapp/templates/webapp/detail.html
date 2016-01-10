@@ -24,6 +24,7 @@
         {% for round in round_f %}
             {% if user.is_staff %}
                 <p><a href="{% url 'manage_nilnils' series.id round.id %}">Staff Only, mark games NilNil for {{ round.round_date }}</a></p>
+                <p><a href="{% url 'missing_prediction' series.id round.id %}">Staff Only, mark missing prediction for {{ round.round_date }}</a></p>
             {% endif %}
 
             {% if round.round_open %}

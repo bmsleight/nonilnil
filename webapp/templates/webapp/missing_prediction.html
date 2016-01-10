@@ -3,13 +3,11 @@
 
 {% block content %}
 
-<h4>Enter the prediction for games to be played on {{ round_f.round_date|date:"D d M Y" }} - {{ round_f.series.series_name }}</h4>
-<p>On the day of the matches - the selected team can not be changed</p>
-{% if all_predictions %}
-    <h4>Saved predictions</h4>
+<h2>Missing Predictions {{ round_f.round_date|date:"D d M Y" }} - {{ round_f.series.series_name }}</h2>
+{% if prediction_empty %}
     <ul>
-    {% for prediction in all_predictions  %}
-        <li>{{ prediction.round_f.round_date|date:"D d M Y" }}, {{ prediction.team }}</li>
+    {% for p_e in prediction_empty  %}
+        <li>{{ p_e }}</li>
     {% endfor %}
     </ul> 
 {% endif %}
@@ -22,11 +20,13 @@
     {% for form in formset.forms %}
         {{ form.non_field_errors }}
         {{ form.errors }}
+        {{ form.as_p }}
     {% endfor %}
-    {{ formset }}
+   {{ formset.management_form }} 
     <button type="submit">Save</button>
 
 </form>
 
 <p><a href="{% url 'series_detail' s_pk %}">Return to Game summary</a></p>
+
 {% endblock %}
