@@ -22,6 +22,10 @@ class Team(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.team_name
 
+    class Meta:
+        ordering = ['id']
+
+
 class Series(models.Model):
     # Include in Admin
     series_name = models.CharField(max_length=200, help_text='Name of series of games')
@@ -32,6 +36,8 @@ class Series(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.series_name
+    class Meta:
+        ordering = ['-id']
   
 class Round(models.Model):
     # Include in Admin
@@ -42,6 +48,9 @@ class Round(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.series.series_name + " " + str(self.round_date)
+    class Meta:
+        ordering = ['-round_date']
+
 
 class Emailround(models.Model):
     # Include in Admin in case of error.
@@ -56,6 +65,8 @@ class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
+    class Meta:
+        ordering = ['series']
 
 class Prediction(models.Model):
     # User form - the only one ?
@@ -71,6 +82,8 @@ class Prediction(models.Model):
             return(Nilnils.objects.get(round_f=self.round_f, team=self.team).ohno)
         else:
             return(False)
+    class Meta:
+        ordering = ['round_f']
 
 
 class Nilnils(models.Model):
@@ -81,3 +94,6 @@ class Nilnils(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return str(self.round_f) + " " + str(self.team) + " " + str(self.ohno)
+    class Meta:
+        ordering = ['round_f']
+
