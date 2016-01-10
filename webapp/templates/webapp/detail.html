@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
 {% if loser %}
 <h1>Losers can not enter any more teams until the next series starts</h1>
 
@@ -37,3 +42,4 @@
     {% endif %}
 
 
+{% endblock %}

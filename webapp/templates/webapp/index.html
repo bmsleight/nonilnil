@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
 {% if series %}
     <ul>
     {% for serie in series %}
@@ -11,3 +16,6 @@
 {% else %}
     <p>No series are available.</p>
 {% endif %}
+
+{% endblock %}
+
