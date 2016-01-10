@@ -4,13 +4,13 @@
 {% block content %}
 
 {% if series %}
-    <ul>
     {% for serie in series %}
-        <li><a href="{% url 'series_detail' serie.id %}">{{ serie.series_name }}</a>
-            {% if not serie.series_open %}(Closed).
+        <h4><a href="{% url 'series_detail' serie.id %}">{{ serie.series_name }}</a>
+            {% if not serie.series_open %}(Closed).</h4>
                 <ul><li>{{ serie.end_message }}</li></ul>
             {% endif %}
-        </li>
+            {% if serie.series_open %}</h4>{% endif %}
+            
     {% endfor %}
     </ul>
 {% else %}

@@ -9,6 +9,7 @@ from .models import Prediction
 from .models import Nilnils
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .forms import PredictionForm
 
@@ -29,7 +30,7 @@ def loser_detail(request, pk):
     round_f = Round.objects.filter(series=series).order_by('-id')
     return render(request, 'webapp/detail.html', {'series': series, 'round_f': round_f, 'loser': True})
 
-@login_required
+@staff_member_required
 def manage_nilnils(request, s_pk, r_pk):
     round_f = get_object_or_404(Round, id=r_pk)
     predictions_all_users = Prediction.objects.filter(round_f=round_f)

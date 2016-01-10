@@ -7,8 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="NoNilNil.com - Avoiding the games with no goals">
+    <meta name="author" content="NoNilNil.com - Avoiding the games with no goals">
     <link rel="icon" href="{% static "favicon/favicon.ico" %}">
 
     <title>NoNilNil.com - Avoiding the games with no goals</title>
@@ -44,18 +44,25 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="/">NoNilNil.com</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
+<!--
             <li><a href="#">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
+-->
+            {% if user.is_staff %}
+                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'auth_password_change' %}">Change Password</a></li> <!-- 'auth_password_change' -->
+                <li><a href="{% url 'auth_logout' %}">Log out</a></li> <!-- auth_login --> <!-- 'auth_logout' -->
+            {% else %}
+                <li><a href="{% url 'registration_register' %}">Register - to play</a></li> <!-- registration_register -->
+                <li><a href="{% url 'auth_login' %}">Login</a></li> <!-- auth_login --> <!-- 'auth_logout' -->
+            {% endif %}
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
         </div>
       </div>
     </nav>
@@ -64,8 +71,8 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Reports</a></li>
+<!--            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li> -->
+            <li><a href="{% url 'series_list' %}">View NoNilNil Games</a></li>
             <li><a href="#">Analytics</a></li>
             <li><a href="#">Export</a></li>
           </ul>

@@ -8,24 +8,26 @@
 
 {% endif %}
 
-<h1>{{ series.series_name }}</h1>
+<h4>{{ series.series_name }}</h4>
     {% if not series.series_open %}
-        <h2>This is now closed</h2>
+        <h5>This is now closed</h5>
         <p>{{ series.end_message }}</p>
     {% endif %}
 
     {% if series.series_open %}
-        <h2>This is still open - what fun</h2>
-        <p>Cost of entry £{{ series.entry_cost }} <p>
-        <p>Roll-over £{{ series.rollover }} <p>
+        <h4>This is still open - what fun</h4>
+        <p>Cost of entry £{{ series.entry_cost }} with a added roll-over of £{{ series.rollover }} <p>
     {% endif %}
 
     {% if round_f %}
-        <p>Rounds</p>
+        <h4>Rounds</h4>
         {% for round in round_f %}
+            {% if user.is_staff %}
+                <p><a href="{% url 'manage_nilnils' series.id round.id %}">Staff Only, mark games NilNil for {{ round.round_date }}</a></p>
+            {% endif %}
 
             {% if round.round_open %}
-            <p><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></p>
+                <ul><li><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></li></ul>
             {% endif %}
 
             {% if not round.round_open %}
