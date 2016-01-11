@@ -29,7 +29,7 @@
 
             {% if round.round_open %}
                 <ul><li><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></li></ul>
-            {% endif %}
+           {% endif %}
 
             {% if not round.round_open %}
                 <ul>

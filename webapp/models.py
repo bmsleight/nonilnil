@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings 
 
+from django.contrib.auth.models import User
+from django.db.models import Sum
 # Create your models here.
 
 class Fgroup(models.Model):
@@ -36,6 +38,21 @@ class Series(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.series_name
+    def paid(self):
+        paid = Payment.objects.filter(series=self.id, paid=True)
+        return paid
+    def naughty(self):
+        paid_users = Payment.objects.filter(series=self.id, paid=True).values('user')
+        round_f = Round.objects.filter(series=self.id)
+        naughty_users = Prediction.objects.filter(round_f=round_f).exclude(user=paid_users)
+        return naughty_users
+    def spectators(self):
+        spectators = User.objects.exclude(id__in =self.paid().values_list('user')).exclude(id__in =self.naughty().values_list('user'))
+        return spectators
+    def expected_prize_pot(self):
+        payment_total = self.paid().aggregate(Sum('payment')).get('payment__sum')
+        return payment_total + self.rollover + (len(self.naughty()) * self.entry_cost)
+
     class Meta:
         ordering = ['-id']
   
@@ -65,6 +82,7 @@ class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
+    payment = models.DecimalField(max_digits=5, decimal_places=2, default=5)
     class Meta:
         ordering = ['series']
 

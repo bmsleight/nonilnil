@@ -5,17 +5,51 @@
 
 {% if series %}
     {% for serie in series %}
-        <h4><a href="{% url 'series_detail' serie.id %}">{{ serie.series_name }}</a>
-            {% if not serie.series_open %}(Closed).</h4>
-                <ul><li>{{ serie.end_message }}</li></ul>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        <h4 class="panel-title"><a href="{% url 'series_detail' serie.id %}">{{ serie.series_name }} {% if not serie.series_open %}(Closed){% endif %}.</h4></a>
+        </div>
+        <div class="panel-body">
+        {% if not serie.series_open %}(Closed).
+            <ul><li>{{ serie.end_message }}</li></ul>
+        {% endif %}
+        {% if serie.series_open %}
+            <h5>Expected prize pot of £{{ serie.expected_prize_pot }}</h5>
+            {% if serie.paid %}
+                <h5>The following people have paid for entry</h5>
+                {% for p in serie.paid %}
+                    <ul><li>{{ p.user }}</li></ul>
+                {% endfor %}
             {% endif %}
-            {% if serie.series_open %}</h4>{% endif %}
-            
+            {% if serie.naughty %}
+                <h5>The following people are naughty - they have made a prediction but not paid</h5>
+                {% for p in serie.naughty %}
+                    <ul><li>{{ p.user }}</li></ul>
+                {% endfor %}
+            {% endif %}
+            {% if serie.spectators %}
+                <h5>The following people are spectators of the show, (not paid, not predicted)</h5>
+                {% for p in serie.spectators %}
+                    <ul><li>{{ p.username }}</li></ul>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        <p><a href="{% url 'series_detail' serie.id %}">View Details or add a prediction</a></p>
+        </div>
+      </div> 
     {% endfor %}
-    </ul>
 {% else %}
-    <p>No series are available.</p>
+    <p>No games are available.</p>
 {% endif %}
-
 {% endblock %}
 
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Panel title</h3>
+  </div>
+  <div class="panel-body">
+    Panel content
+  </div>
+</div>
