@@ -23,14 +23,9 @@
         <h4>Rounds</h4>
         {% for round in round_f %}
             <div class="panel panel-default">
-            <div class="panel-body">
-            {% if user.is_staff %}
-                <p><a href="{% url 'manage_nilnils' series.id round.id %}">Staff Only, mark games NilNil for {{ round.round_date }}</a></p>
-                <p><a href="{% url 'missing_prediction' series.id round.id %}">Staff Only, mark missing prediction for {{ round.round_date }}</a></p>
-            {% endif %}
-
             {% if round.round_open %}
                 <div class="panel-heading"><h4 class="panel-title"><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></h4></div>
+                <div class="panel-body">
                 {% if round.staff_predictions %}
                     <p>Website staff predictions are show ahead of the end date - so you can see no cheating</p>
                     <ul>
@@ -43,10 +38,16 @@
 
             {% if not round.round_open %}
                 <div class="panel-heading"><h4 class="panel-title">{{ round.round_date }} - Round Closed</h4></div>
+                <div class="panel-body">
                 {% for prediction in round.prediction_set.all %}
                     <ul><li>{{ prediction.user }}, picked {{ prediction.team }}, which {{ prediction.failed|yesno:"was Nil Nil!,had a goal,maybe - just maybe" }}</li></ul>
                 {% endfor %}
             {% endif %}
+            {% if user.is_staff %}
+                <p><a href="{% url 'manage_nilnils' series.id round.id %}">Staff Only, mark games NilNil for {{ round.round_date }}</a></p>
+                <p><a href="{% url 'missing_prediction' series.id round.id %}">Staff Only, mark missing prediction for {{ round.round_date }}</a></p>
+            {% endif %}
+
             </div>
             </div>
         {% endfor %}
