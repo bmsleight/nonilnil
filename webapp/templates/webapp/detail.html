@@ -22,25 +22,33 @@
     {% if round_f %}
         <h4>Rounds</h4>
         {% for round in round_f %}
+            <div class="panel panel-default">
+            <div class="panel-body">
             {% if user.is_staff %}
                 <p><a href="{% url 'manage_nilnils' series.id round.id %}">Staff Only, mark games NilNil for {{ round.round_date }}</a></p>
                 <p><a href="{% url 'missing_prediction' series.id round.id %}">Staff Only, mark missing prediction for {{ round.round_date }}</a></p>
             {% endif %}
 
             {% if round.round_open %}
-                <ul><li><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></li></ul>
-           {% endif %}
+                <div class="panel-heading"><h4 class="panel-title"><a href="{% url 'manage_prediction' series.id round.id %}">Round still open until {{ round.round_date }} - enter your selection</a></h4></div>
+                {% if round.staff_predictions %}
+                    <p>Website staff predictions are show ahead of the end date - so you can see no cheating</p>
+                    <ul>
+                    {% for prediction in round.staff_predictions %}
+                        <li>{{ prediction.user }}, picked {{ prediction.team }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endif %}
 
             {% if not round.round_open %}
-                <ul>
-                <li>{{ round.round_date }} - Round Closed </li>
-
+                <div class="panel-heading"><h4 class="panel-title">{{ round.round_date }} - Round Closed</h4></div>
                 {% for prediction in round.prediction_set.all %}
                     <ul><li>{{ prediction.user }}, picked {{ prediction.team }}, which {{ prediction.failed|yesno:"was Nil Nil!,had a goal,maybe - just maybe" }}</li></ul>
                 {% endfor %}
-               </ul>
             {% endif %}
-
+            </div>
+            </div>
         {% endfor %}
     {% endif %}
 

@@ -63,6 +63,10 @@ class Round(models.Model):
     round_open = models.BooleanField(default=True)
     email_message = models.TextField(null=True, blank=True, help_text="A Message to include in the email")
 
+    def staff_predictions(self):
+        p = Prediction.objects.filter(round_f=self.id).filter(user__is_staff=1)
+        return p
+
     def __str__(self):              # __unicode__ on Python 2
         return self.series.series_name + " " + str(self.round_date)
     class Meta:
