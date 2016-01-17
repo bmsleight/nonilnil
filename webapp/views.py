@@ -88,7 +88,7 @@ def ping_email_message(request, s_pk, r_pk):
                 c = Context({'message': message, 'user': user, 'round_f': round_f,})    
                 text_content = render_to_string('email/round_email.txt', c)
                 subject = 'NoNilNil - ' + str(round_f.series)
-                send_mail(subject, text_content, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+                send_mail(subject, text_content, "NoNilNil News <no-reply@NoNilNil.com>", [user.email], fail_silently=False)
             if send_to_all:
                 round_f.email_message = message
                 round_f.save()
