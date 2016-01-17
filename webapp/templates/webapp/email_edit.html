@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<h4>{{ round_f.round_date|date:"D d M Y" }} - {{ round_f.series.series_name }}</h4>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+
+<p><a href="{% url 'series_detail' s_pk %}">Return to Game summary</a></p>
+{% endblock %}

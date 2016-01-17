@@ -14,5 +14,5 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/l/$', views.loser_detail, name='loser_detail'),
     url(r'^(?P<s_pk>[0-9]+)/(?P<r_pk>[0-9]+)/nilnils/$', views.manage_nilnils, name='manage_nilnils'),
     url(r'^(?P<s_pk>[0-9]+)/(?P<r_pk>[0-9]+)/missing/$', views.missing_prediction, name='missing_prediction'),
-
+    url(r'^(?P<s_pk>[0-9]+)/(?P<r_pk>[0-9]+)/ping/$', views.ping_email_message, name='ping_email_message'),
 ]
