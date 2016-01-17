@@ -1,0 +1,27 @@
+{{ message }}
+
+Sincerely, 
+nonilnil.com
+
+************************************************************************
+************************************************************************
+The email was sent on behalf of NoNilNil.com, replies are not monitored
+
+You are receiveing this emails because you, or someone pretending to be
+you, has sucessufully registered to play along with NoNilNil.com
+
+If you no longer wish to receive email (i.e. unsubscribe)
+     - please notifiy: support@nonilnil.com
+     - your account will be deleted and any prize pot money recycled
+
+This email was sent to user: {{ user.username }} 
+         with email address: {{ user.email }}
+
+Rules must be obeyed- http://nonilnil.com/rules/
+Something wrong, missing or needs improving ? 
+ - Sent a tweet to @NoNilNil or email support@nonilnil.com
+
+"I wouldn’t say I was the best manager in the business. 
+ But I was in the top one." - Brian Clough
+************************************************************************
+************************************************************************

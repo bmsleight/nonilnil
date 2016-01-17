@@ -3,6 +3,13 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.db.models import Sum
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.template import Context
+from django.template.loader import render_to_string
+
 # Create your models here.
 
 class Fgroup(models.Model):
@@ -89,6 +96,19 @@ class Payment(models.Model):
     payment = models.DecimalField(max_digits=5, decimal_places=2, default=5)
     class Meta:
         ordering = ['series']
+
+    def __str__(self):              # __unicode__ on Python 2
+        return str(self.user) + " " + str(self.series) + " " + str(self.payment)
+
+@receiver(post_save, sender=Payment, dispatch_uid="update_payment")
+def update_payment(sender, instance, **kwargs):
+    payment = instance
+    message = "Payment received, £" + str(payment.payment) + ". You are now off the naughty step."
+    c = Context({'message': message, 'user': payment.user,}) 
+    text_content = render_to_string('email/payment.txt', c)
+    subject = "NoNilNil - Payment received for " + str(payment.series)
+    send_mail(subject, text_content, "NoNilNil Payments <no-reply@NoNilNil.com>", [payment.user.email], fail_silently=False)
+
 
 class Prediction(models.Model):
     # User form - the only one ?
